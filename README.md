@@ -1,5 +1,5 @@
 <p align="center">
-# OpenNitro
+   <img src="resources/opennitro.png" width="200" title="OpenNitro Project">
 </p>
 
 The OpenNitro (NTR) project is an open-source implementation of the Nintendo DS (NTR) BIOS.
