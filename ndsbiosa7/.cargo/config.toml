@@ -1,0 +1,8 @@
+[build]
+target = "armv4t-none-eabi"
+
+[target.armv4t-none-eabi]
+rustflags = ["-C", "link-arg=-Tarm7bios.ld", "-C", "relocation-model=pic"]
+
+[unstable]
+build-std = ["core"]
