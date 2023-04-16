@@ -24,3 +24,9 @@ jobs:
       working-directory: ./ndsbiosa7
       run: 
         cargo objcopy --release --verbose -- -O binary ndsa7.bin
+
+    - name: Create artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ndsbiosa7.bin
+        path: ./ndsa7.bin
