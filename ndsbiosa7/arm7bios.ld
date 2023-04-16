@@ -34,7 +34,16 @@ SECTIONS {
 		KEEP(*(.rodata .rodata.*));
 		. = ALIGN(4096);
 	} > BIOS =0
-
+        
+	/* Cannot discard .shstrtab in LLVM LD,
+	 * but it will be removed when this is converted into
+	 * raw binary anyways...
+	 */
+	.shstrtab :
+	{
+		*(.shstrtab);
+	}
+	
 	/DISCARD/ :
 	{
 		*(*)
