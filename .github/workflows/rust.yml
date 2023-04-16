@@ -16,6 +16,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Install cargo-binutils
+      run: cargo install cargo-binutils
+
     - name: Build A7 BIOS
       working-directory: ./ndsbiosa7
-      run: cargo build --release --verbose
+      run: 
+        cargo objcopy --release --verbose -- -O binary ndsa7.bin
