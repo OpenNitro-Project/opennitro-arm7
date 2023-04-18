@@ -15,7 +15,6 @@ const IPCSYNC: u32 = 0x04000180;
 // Encrypt a single 64-bit word.
 // See the decrypt algorithm below.
 // This is the same, except it works in "reverse".
-#[instruction_set(arm::t32)]
 #[no_mangle]
 pub unsafe extern "C" fn Blowfish_Encrypt64 (
     key: *mut u32,
@@ -55,7 +54,6 @@ pub unsafe extern "C" fn Blowfish_Encrypt64 (
 // Invariants:
 //     1) L = R + 4 (bytes).
 
-#[instruction_set(arm::t32)]
 #[no_mangle]
 pub unsafe extern "C" fn Blowfish_Decrypt64 (
     key: *mut u32,
@@ -81,7 +79,6 @@ pub unsafe extern "C" fn Blowfish_Decrypt64 (
     *r = *key.offset(1) ^ *l;
 }
 
-#[instruction_set(arm::t32)]
 #[no_mangle]
 pub unsafe extern "C" fn Blowfish_FeistelRound (
     keyarea: *mut u32,
@@ -111,6 +108,7 @@ pub unsafe extern "C" fn Blowfish_FeistelRound (
 // (using the ldmlt and stmlt opcodes) on 8 * u32 chunks (256-bits), then copied
 // any remainder "slowly" (using mov). With the privilege of modern compilers, we
 // shouldn't have to worry about such meta-programming.
+#[instruction_set(arm::a32)]
 #[no_mangle]
 pub unsafe extern "C" fn CpuFastCopy (
     src: *const u32,
@@ -137,7 +135,6 @@ pub unsafe extern "C" fn CpuFastCopy (
 // This is not the high-bandwidth IPC FIFO (at 4000188h-4100000h), and is
 // used only to send synchronizing control codes.
 // However, calls to this particular check function always have IPCSYNC[3]=0.
-#[instruction_set(arm::t32)]
 #[no_mangle]
 pub unsafe extern "C" fn IPCWait(wait_for: u32) {
     while {
@@ -162,6 +159,7 @@ pub unsafe extern "C" fn IPCWait(wait_for: u32) {
 // 2) Zero 200h bytes between 0x3FFFE00..0x4000000 ... for some reason.
 #[naked]
 #[no_mangle]
+#[instruction_set(arm::a32)]
 pub unsafe extern "C" fn InitARM7Stacks() {
     asm!(
         ".code 32",             // start out in arm mode
@@ -198,6 +196,7 @@ pub unsafe extern "C" fn InitARM7Stacks() {
 // not even going to attempt to do this in anything other than asm.
 #[naked]
 #[no_mangle]
+#[instruction_set(arm::a32)]
 pub unsafe extern "C" fn BiosSafeShim () {
     asm!(
         "tst lr, #0xff000000",
