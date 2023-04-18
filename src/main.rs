@@ -3,7 +3,7 @@
  */
 #![no_std]
 #![no_main]
-// #![no_builtins]
+#![no_builtins]
 #![feature(link_llvm_intrinsics)]
 #![feature(naked_functions)]
 
