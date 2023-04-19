@@ -115,17 +115,20 @@ pub unsafe extern "C" fn CpuFastCopy (
     dst: *mut u32,
     size: u32
 ) {
-    let dst_slice = core::slice::from_raw_parts_mut(dst, size as usize);
-    let src_slice = core::slice::from_raw_parts(src, size as usize);
+    // Although pretty, we cannot use core::slice::copy_from_slice here because
+    // it will generate a massive generic memcpy implementation. Do simple byte-wise
+    // copying. (See Quirks)
 
     // If this particular bit is set in the size field, instead of performing a copy,
     // just set all words in the destination range with src[0].
     if ((size >> 0x18) & 1) != 0 {
-        for elem in dst_slice {
-            *elem = *src;
+        for i in 0..size as usize {
+            *dst.add(i) = *src;
         }
     } else {
-        dst_slice.copy_from_slice(&src_slice);
+        for i in 0..size as usize {
+            *dst.add(i) = *src.add(i);
+        }
     }
 }
 
