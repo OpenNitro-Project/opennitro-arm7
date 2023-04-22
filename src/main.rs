@@ -4,10 +4,10 @@
 #![no_std]
 #![no_main]
 #![no_builtins]
-#![feature(link_llvm_intrinsics)]
 #![feature(naked_functions)]
 
 use core::arch::asm;
+use opennitro_macros::check_callsite;
 
 const IPCSYNC: u32 = 0x04000180;
 
@@ -53,8 +53,8 @@ pub unsafe extern "C" fn Blowfish_Encrypt64 (
 //       The LSB of the 64-bit word to decrypt.
 // Invariants:
 //     1) L = R + 4 (bytes).
-
 #[no_mangle]
+#[check_callsite]
 pub unsafe extern "C" fn Blowfish_Decrypt64 (
     key: *mut u32,
     l: *mut u32,
@@ -79,6 +79,15 @@ pub unsafe extern "C" fn Blowfish_Decrypt64 (
     *r = *key.offset(1) ^ *l;
 }
 
+// (from 1FB4h in arm7bios)
+// Perform a single Feistel round for the
+// Blowfish algorithm (also known as KEY1).
+// Parameters:
+//     - keyarea: u32 *
+//       A concatenation of P-array and S-boxes,
+//       generated typically from the gamecode.
+//     - word_in_flight
+//       The current 32-bit word being operated on.
 #[no_mangle]
 pub unsafe extern "C" fn Blowfish_FeistelRound (
     keyarea: *mut u32,

@@ -11,3 +11,4 @@ lto = true
 strip = true
 
 [dependencies]
+opennitro-macros = { git = "https://github.com/OpenNitro-Project/opennitro-macros.git" }
