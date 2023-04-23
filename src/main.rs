@@ -7,7 +7,7 @@
 #![feature(naked_functions)]
 
 use core::arch::asm;
-use opennitro_macros::check_callsite;
+use opennitro_macros::bios_call;
 
 const IPCSYNC: u32 = 0x04000180;
 
@@ -54,7 +54,7 @@ pub unsafe extern "C" fn Blowfish_Encrypt64 (
 // Invariants:
 //     1) L = R + 4 (bytes).
 #[no_mangle]
-#[check_callsite]
+#[bios_call(expand64)]
 pub unsafe extern "C" fn Blowfish_Decrypt64 (
     key: *mut u32,
     l: *mut u32,
